@@ -1,13 +1,12 @@
 import Operator, { OperatorResult } from "./operators/Operator";
-
+import { CREATE_CONTANT, CREATE_VARIABLE } from '../util/ExpressionCreator';
 export default class Expression {
     private childs: Expression[] = [];
     private operators : Operator[] = [];
     private str: string = '';
-    
+    private parent:Expression|null = null;
     // Default constant
-    constructor (str: string) {
-        this.str = str;
+    constructor () {
     }
 
     public addChild (child: Expression) {
@@ -21,18 +20,18 @@ export default class Expression {
         if(this.Childs.length === 0 ){
             try{
                 const value: number = parseFloat(this.str);
-                return value;
+                return this;
             }catch(e){
                 throw new Error ('NOT CONSTANT');
             } 
         } 
         //#endregion
         
-        for (let i = 0; i<this.operators.length ;i++) {
-            const result:OperatorResult = this.operators[i].calculate(this);
-            this.Childs = [ new Expression (result.result + ''),...this.Childs.slice(result.countSubExpression)];  
-        }
-        
+        // for (let i = 0; i<this.operators.length ;i++) {
+        //     const result:OperatorResult = this.operators[i].calculate(this);
+        //     this.Childs = [ new Expression (result.result + ''),...this.Childs.slice(result.countSubExpression)];  
+        // }
+        return this;
     }
 
     //#region  setter and getter
@@ -48,6 +47,19 @@ export default class Expression {
     }
     set Operators(operators: Operator[]) {
         this.operators = operators;
+    }
+
+    get Str():string {
+        return this.str;
+    }
+    set Str(str:string){
+        this.str = str;
+    }
+    get Parent():Expression|null {
+        return this.parent;
+    }
+    set Parent(parent:Expression|null){
+        this.parent = parent;
     }
     //#endregion 
 }
